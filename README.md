@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Orienta — One‑Page Orientation Web App
 
 **Features mapped to device orientation**
