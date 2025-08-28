@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orienta – Alarm • Stopwatch • Timer • Weather</title>
+  <meta name="theme-color" content="#0f172a">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #111833;
+      --muted: #7280a7;
+      --text: #e5e7eb;
+      --accent: #92f5c5;
+      --accent-2: #8bd3ff;
+      --danger: #ff8b8b;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial; background: radial-gradient(1200px 800px at 80% -10%, #182243 0%, var(--bg) 50%); color: var(--text); }
+    .app { min-height: 100%; display:flex; align-items:center; justify-content:center; padding: 20px; }
+    .card { width: 100%; max-width: 520px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.45); overflow:hidden; }
+    .header { padding: 16px 18px; display:flex; align-items:center; justify-content:space-between; background: rgba(0,0,0,0.25); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .title { font-weight: 700; letter-spacing: 0.3px; font-size: 16px; opacity: 0.95; }
+    .pill { font-size: 12px; padding: 6px 10px; border-radius: 999px; background: rgba(146,245,197,0.1); color: var(--accent); border:1px solid rgba(146,245,197,0.25); }
+    .pill.alarm-set { background: rgba(146,245,197,0.25); color:#04170f; border-color: rgba(146,245,197,0.65); }
+    .pill.alarm-cleared { background: rgba(255,139,139,0.25); color:#2a0909; border-color: rgba(255,139,139,0.65); }
+
+    .mode { display:none; padding: 24px; animation: fade 320ms ease both; }
+    .mode.active { display:block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px) scale(0.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .big { font-size: clamp(40px, 13vw, 84px); font-weight: 800; letter-spacing: 2px; text-align:center; margin: 12px 0 6px; }
+    .sub { text-align:center; color: var(--muted); margin-bottom: 18px; font-size: 14px; }
+    .row { display:flex; gap: 10px; }
+    .col { flex:1; }
+    .btn { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--text); font-weight: 700; font-size: 15px; letter-spacing: 0.3px; cursor:pointer;}
+    .btn:active { transform: translateY(1px); }
+    .btn.acc.active { background: linear-gradient(180deg, rgba(146,245,197,0.35), rgba(146,245,197,0.25)); color:#04170f; border-color: rgba(146,245,197,0.7); }
+    .btn.acc { background: linear-gradient(180deg, rgba(146,245,197,0.25), rgba(146,245,197,0.18)); color:#04170f; border-color: rgba(146,245,197,0.65); }
+    .btn.warn { background: linear-gradient(180deg, rgba(255,139,139,0.25), rgba(255,139,139,0.18)); color:#2a0909; border-color: rgba(255,139,139,0.65); }
+
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .input { width: 100%; padding: 14px; border-radius: 14px; border:1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.3); color: var(--text); font-size: 16px; text-align:center; }
+    .hint { font-size: 12px; color: var(--muted); text-align:center; margin-top: 10px; }
+    .footer { padding: 12px 18px; font-size: 12px; color: var(--muted); display:flex; justify-content:space-between; align-items:center; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.25); }
+    .chip { padding:6px 8px; border-radius: 999px; border:1px dashed rgba(255,255,255,0.18); }
+    .weather-box { display:flex; align-items:center; justify-content:center; gap: 14px; margin: 14px 0; }
+    .weather-emoji { font-size: clamp(44px, 10vw, 64px); }
+    .wxline { text-align:center; font-size: 14px; opacity:0.9; }
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <div class="header">
+        <div class="title">Orienta</div>
+        <div id="modeBadge" class="pill">…</div>
+      </div>
+
+      <!-- Alarm -->
+      <section id="alarm" class="mode">
+        <div class="big" id="clock">00:00:00</div>
+        <div class="sub">Alarm Clock · Tap to add alarm time</div>
+        <div class="grid" style="margin-top:10px">
+          <input id="alarmTime" type="time" class="input">
+          <button id="setAlarmBtn" class="btn acc">Set Alarm</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="clearAlarmBtn" class="btn warn">Clear</button>
+          <button id="snoozeBtn" class="btn">Snooze 5m</button>
+        </div>
+        <div class="hint">Hold phone portrait (upright). Alarm will ring even if you switch modes.</div>
+      </section>
+
+      <!-- Weather -->
+      <section id="weather" class="mode">
+        <div class="weather-box">
+          <div class="weather-emoji" id="wxEmoji">⛅</div>
+          <div>
+            <div class="big" id="wxTemp">--°</div>
+            <div class="wxline" id="wxSummary">Fetching your location…</div>
+            <div class="wxline" id="wxHiLo">—</div>
+          </div>
+        </div>
+        <div class="row">
+          <button id="wxRefresh" class="btn">Refresh</button>
+          <button id="wxUseJHB" class="btn">Use JHB</button>
+        </div>
+        <div class="hint">Weather by Open-Meteo (free).</div>
+      </section>
+
+      <div class="footer">
+        <div class="chip">Rotate device to switch features</div>
+        <div id="angleReadout" class="chip">angle: —</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="alarmTone" preload="auto" loop>
+    <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+  </audio>
+  <audio id="snoozeTone" preload="auto">
+    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+  </audio>
+
+  <script>
+    const qs = s => document.querySelector(s);
+    const qsa = s => Array.from(document.querySelectorAll(s));
+
+    function formatTime(h,m,s){ const pad = n=> String(n).padStart(2,'0'); return `${pad(h)}:${pad(m)}:${pad(s)}`;}
+
+    function setActive(id,label){ qsa('.mode').forEach(m=>m.classList.remove('active')); qs('#'+id).classList.add('active'); qs('#modeBadge').textContent=label; }
+
+    function getAngle(){ if(screen.orientation && typeof screen.orientation.angle==='number') return screen.orientation.angle; if(typeof window.orientation==='number') return window.orientation; return window.innerWidth>window.innerHeight?90:0; }
+
+    function applyModeByAngle(angle){ qs('#angleReadout').textContent=`angle: ${angle}`; const norm=((angle%360)+360)%360; if(norm===0)setActive('alarm','Portrait ↑ – Alarm'); else if(norm===90)setActive('weather','Landscape → – Weather'); else if(norm===180)setActive('alarm','Portrait ↓ – Alarm'); else if(norm===270)setActive('weather','Landscape ← – Weather'); else setActive('alarm','Auto');}
+
+    function watchOrientation(){ applyModeByAngle(getAngle()); window.addEventListener('orientationchange',()=>applyModeByAngle(getAngle())); window.addEventListener('resize',()=>applyModeByAngle(getAngle())); }
+
+    // Alarm
+    let alarmAt = null; const snoozeMs=5*60*1000;
+    const alarmTone=qs('#alarmTone'); const snoozeTone=qs('#snoozeTone'); const setBtn=qs('#setAlarmBtn');
+
+    function tickClock(){
+      const now=new Date();
+      qs('#clock').textContent=formatTime(now.getHours(),now.getMinutes(),now.getSeconds());
+      if(alarmAt && now>=alarmAt) triggerAlarm();
+      requestAnimationFrame(tickClock);
+    }
+
+    function triggerAlarm(){
+      alarmAt=null;
+      try{ alarmTone.currentTime=0; alarmTone.play(); }catch{}
+      navigator.vibrate && navigator.vibrate([200,100,200,100,300]);
+      const badge=qs('#modeBadge'); badge.textContent='⏰ Ringing!'; badge.classList.add('alarm-set'); setBtn.classList.add('active');
+    }
+
+    qs('#setAlarmBtn').addEventListener('click',()=>{
+      const v=qs('#alarmTime').value; if(!v){ alert('Pick a time'); return;}
+      const [hh,mm]=v.split(':').map(Number); const now=new Date(); const target=new Date(); target.setHours(hh,mm,0,0);
+      if(target<=now) target.setDate(target.getDate()+1);
+      alarmAt=target;
+      const badge=qs('#modeBadge'); badge.textContent='Alarm set'; badge.classList.add('alarm-set'); badge.classList.remove('alarm-cleared');
+      setBtn.classList.add('active'); alert('Alarm set for '+target.toLocaleTimeString());
+    });
+
+    qs('#clearAlarmBtn').addEventListener('click',()=>{
+      alarmAt=null; alarmTone.pause(); alarmTone.currentTime=0;
+      const badge=qs('#modeBadge'); badge.textContent='Alarm cleared'; badge.classList.remove('alarm-set'); badge.classList.add('alarm-cleared');
+      setBtn.classList.remove('active');
+    });
+
+    qs('#snoozeBtn').addEventListener('click',()=>{
+      alarmTone.pause(); alarmTone.currentTime=0; snoozeTone.currentTime=0; snoozeTone.play();
+      alarmAt=new Date(Date.now()+snoozeMs);
+      const badge=qs('#modeBadge'); badge.textContent='Snoozed 5 min'; badge.classList.add('alarm-set'); badge.classList.remove('alarm-cleared');
+      setBtn.classList.add('active'); alert('Snoozed 5 minutes');
+    });
+
+    // Weather
+    const WMO={0:['Clear','☀️'],1:['Mainly clear','🌤️'],2:['Partly cloudy','⛅'],3:['Overcast','☁️'],45:['Fog','🌫️'],48:['Rime fog','🌫️'],51:['Light drizzle','🌦️'],53:['Drizzle','🌦️'],55:['Heavy drizzle','🌧️'],61:['Light rain','🌧️'],63:['Rain','🌧️'],65:['Heavy rain','🌧️'],71:['Light snow','🌨️'],73:['Snow','🌨️'],75:['Heavy snow','❄️'],77:['Snow grains','❄️'],80:['Rain showers','🌧️'],82:['Heavy showers','🌧️'],95:['Thunderstorm','⛈️'],96:['Thunder w/ hail','⛈️'],99:['Thunder w/ hail','⛈️']};
+
+    async function fetchWeather(lat,lon){
+      qs('#wxSummary').textContent='Loading weather…';
+      try{
+        const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`;
+        const r=await fetch(url); const j=await r.json();
+        const cw=j.current_weather||{}; const d=j.daily||{};
+        const code=cw.weathercode??(d.weathercode?d.weathercode[0]:2);
+        const [desc,emoji]=WMO[code]||['Weather','⛅'];
+        const temp=cw.temperature??'--'; const hi=d.temperature_2m_max?Math.round(d.temperature_2m_max[0]):'—'; const lo=d.temperature_2m_min?Math.round(d.temperature_2m_min[0]):'—';
+        qs('#wxEmoji').textContent=emoji; qs('#wxTemp').textContent=`${Math.round(temp)}°`; qs('#wxSummary').textContent=`${desc} · ${j.timezone||''}`; qs('#wxHiLo').textContent=`Today: H ${hi}° / L ${lo}°`;
+      }catch(e){ qs('#wxSummary').textContent='Failed to load weather.'; }
+    }
+
+    function getLocationAndWeather(){
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(pos=>fetchWeather(pos.coords.latitude,pos.coords.longitude), err=>fetchWeather(-26.2041,28.0473), {enableHighAccuracy:false, timeout:5000, maximumAge:600000});
+      }else fetchWeather(-26.2041,28.0473);
+    }
+
+    qs('#wxRefresh').addEventListener('click',getLocationAndWeather);
+    qs('#wxUseJHB').addEventListener('click',()=>fetchWeather(-26.2041,28.0473));
+
+    watchOrientation(); tickClock(); getLocationAndWeather();
+  </script>
+</body>
+</html>
