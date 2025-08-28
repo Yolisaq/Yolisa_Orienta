@@ -1,95 +1,61 @@
+# 🕰️ Orienta – Alarm • Stopwatch • Timer • Weather
 
-# Orienta — One‑Page Orientation Web App
+A sleek, mobile-friendly web application that combines an **Alarm Clock**, **Weather Display**, and device orientation features in a single interface. Built with **HTML**, **CSS**, and **JavaScript**.  
 
-**Features mapped to device orientation**
+[🌐 Live Demo](https://orienta-app.netlify.app) • [💻 GitHub Repo](https://github.com/Yolisaq/Yolisa_Orienta)
 
-- **Portrait (upright, angle 0):** Alarm Clock (set/clear/snooze 5m)
-- **Landscape right (angle 90):** Stopwatch (start/pause/reset)
-- **Portrait upside down (angle 180):** Timer (set minutes/seconds; start/pause/reset)
-- **Landscape left (angle 270):** Weather of the Day (Open‑Meteo; geolocation with Johannesburg fallback)
+---
 
-## Run locally
-1. Download `index.html` and open it in a **mobile browser** (Android Chrome / iOS Safari). It also works in desktop with DevTools device toolbar.
-=======
-# Orienta — One‑Page Orientation Web App 🚀📱
+## 🚀 Features
 
-**Features mapped to device orientation**
+### ⏰ Alarm Clock
+- 🟢 Set, clear, and snooze alarms.
+- Rings even when switching modes.
+- Visual indicator for alarm status:
+  - 🟢 Alarm Set
+  - 🔴 Alarm Cleared
+  - ⏰ Ringing!
+- ⏱️ Snooze function adds **5 minutes** to the alarm.
+- 📳 Vibration support for devices that allow it.
 
-- **📌 Portrait (upright, angle 0):** Alarm Clock (set/clear/snooze 5m)
-- **⏱️ Landscape right (angle 90):** Stopwatch (start/pause/reset)
-- **⏲️ Portrait upside down (angle 180):** Timer (set minutes/seconds; start/pause/reset)
-- **🌤️ Landscape left (angle 270):** Weather of the Day (Open‑Meteo; geolocation with Johannesburg fallback)
+### 🌤️ Weather
+- 🌡️ Displays **current weather** with emoji icons.
+- Shows **temperature**, **summary**, and **high/low for the day**.
+- 📍 Auto-detects your location via Geolocation API.
+- 🌆 Option to manually use **Johannesburg coordinates**.
+- 🛰️ Weather data provided by **Open-Meteo (free)**.
 
-## Project Status ✅
-- **🟢 Completed:** All four orientation-based features fully implemented.
-- **📱 Tested on:** Android Chrome, iOS Safari, Desktop Chrome (device emulator).
-- **⚠️ Known issues:** On some iOS devices, upside-down orientation may be disabled by system settings; Safari supports it.
-- **💡 Next steps:** Could add custom themes, notifications, or more precise alarm vibration patterns.
+### 📱 Orientation-Based Mode Switching
+- Portrait (↑ or ↓) → Alarm Clock
+- Landscape (→ or ←) → Weather
+- 🔄 Automatically detects **screen rotation**.
+- 📐 Angle readout for debugging: `angle: X°`.
 
-## Run locally 🖥️📲
-1. Download `index.html` and open it in a **mobile browser** (Android Chrome / iOS Safari). Works on desktop with DevTools device toolbar too.
->>>>>>> 86e58e3e1a83efd93cf0974c9e42094d855bfdda
-2. Allow **Location** for weather, or tap **Use JHB**.
-3. Rotate the device to switch features seamlessly.
+### 🎨 Design
+- 🌑 Dark, modern theme with radial gradients.
+- ✨ Smooth animations when switching modes.
+- 📱 Responsive layout for mobile and desktop.
 
-> Tip (desktop): In Chrome, open DevTools → Toggle Device Toolbar → set a phone, then press `Ctrl/Cmd+Shift+P` → “Show device frame”, and rotate.
+### 🔊 Audio
+- 🔔 Alarm tone: Google Actions Alarm Clock sound
+- 🔉 Snooze tone: Short beep
+- 🔁 Looping for continuous alarm until cleared.
 
-<<<<<<< HEAD
-## Deploy (free)
-=======
-## Deploy (free) 🌐
->>>>>>> 86e58e3e1a83efd93cf0974c9e42094d855bfdda
-**GitHub Pages**
-1. Create a repo (e.g., `orienta`), upload `index.html` to the root.
-2. Settings → Pages → **Deploy from branch** (main / root). Your URL will be `https://<username>.github.io/orienta/`.
+---
 
-**Netlify (drag & drop)**
-1. Go to app.netlify.com → New site from Git → choose your repo, or drag‑drop a folder with `index.html`.
-2. You’ll get a `https://<name>.netlify.app` URL.
+## 🛠️ How to Use
 
-<<<<<<< HEAD
-## Tech notes
-- Runs 100% in the browser (no backend).
-- Orientation detection uses `screen.orientation.angle`, `window.orientation` (iOS fallback), and a resize fallback.
-- Weather: [Open‑Meteo](https://open-meteo.com/) — free, no API key. We request `current_weather` and daily high/low.
-- Works on Android and iOS. On iOS, upside‑down may be disabled by system in some apps, but Safari allows it.
+1. **Open [🌐 Orienta App](https://orienta-app.netlify.app)** in a browser.
+2. **Set an alarm**:  
+   - Tap the alarm time input, select a time, and click **Set Alarm**.
+3. **Clear an alarm**:  
+   - Click **Clear** to stop the alarm.
+4. **Snooze**:  
+   - Click **Snooze 5m** to postpone the alarm by 5 minutes.
+5. **Check weather**:  
+   - Rotate your device to landscape, or click **Refresh** to update.
+   - Optionally click **Use JHB** to view Johannesburg weather.
 
-## Demo video (≤ 2 min) — suggested script
-1. **Intro (10s):** “This is *Orienta*, a mobile‑first web app that changes tools when you rotate your phone.”
-=======
-## Tech notes ⚙️
-- Runs 100% in the browser (no backend).
-- Orientation detection uses `screen.orientation.angle`, `window.orientation` (iOS fallback), and a resize fallback.
-- Weather: [Open‑Meteo](https://open-meteo.com/) — free, no API key. Requests `current_weather` and daily high/low.
-- Works on Android and iOS. On iOS, upside-down may be disabled by system in some apps, but Safari allows it.
+---
 
-## Demo video (≤ 2 min) 🎥
-1. **Intro (10s):** “This is *Orienta*, a mobile-first web app that changes tools when you rotate your phone.”
->>>>>>> 86e58e3e1a83efd93cf0974c9e42094d855bfdda
-2. **Portrait ↑ Alarm (20s):** Show clock; set alarm for 1 minute; mention snooze; quick ring preview.
-3. **Landscape → Stopwatch (20s):** Start, pause, resume, reset.
-4. **Portrait ↓ Timer (20s):** Set 0 min 10 sec; start; show vibration/sound.
-5. **Landscape ← Weather (25s):** Allow location; show temps and summary; tap **Use JHB** fallback; tap **Refresh**.
-<<<<<<< HEAD
-6. **Wrap (15s):** “All in one file, no backend. Open‑Meteo free API. Works on Android & iOS. Open‑source on GitHub Pages.”
-
-Record on your phone (screen recorder), or on desktop using Chrome’s device emulator.
-
-## Evaluation checklist
-- **Functionality:** Four modes auto‑switch on orientation.
-- **UX:** Big touch targets, clear labels, smooth fade transition, single‑screen controls.
-- **Prompting:** See `prompts_used.md` for full AI prompting log.
-- **Technical:** Clean, commented single‑file HTML/CSS/JS; resilient orientation detection; no dependencies.
-- **Wow:** A complete multi‑tool utility in just one file with polished UI, vibration and sound cues.
-=======
-6. **Wrap (15s):** “All in one file, no backend. Open‑Meteo free API. Works on Android & iOS. Open-source on GitHub Pages.”
-
-Record on your phone (screen recorder), or on desktop using Chrome’s device emulator.
-
-## Evaluation checklist 📋
-- **Functionality:** Four modes auto‑switch on orientation.
-- **UX:** Big touch targets, clear labels, smooth fade transition, single-screen controls.
-- **Prompting:** See `prompts_used.md` for full AI prompting log.
-- **Technical:** Clean, commented single-file HTML/CSS/JS; resilient orientation detection; no dependencies.
-- **Wow:** A complete multi-tool utility in just one file with polished UI, vibration and sound cues.
->>>>>>> 86e58e3e1a83efd93cf0974c9e42094d855bfdda
+## 📂 File Structure
